@@ -9,11 +9,18 @@ Container decisions for hermes (fixed here, versioned with the plugin):
 
 | hermes call shape                  | channel_type | conversation ref        |
 |------------------------------------|--------------|-------------------------|
-| gateway session (has session key)  | platform id  | gateway_session_key     |
+| gateway message (has chat_id)      | platform id  | chat_id (channel-native)|
+| gateway session w/o chat_id        | platform id  | gateway_session_key     |
 | ACP (Cursor/Zed)                   | acp          | session_id              |
 | terminal (cli/tui, incl. oneshot)  | cli          | user_id (one per user)  |
 | anything else                      | hermes       | session:<session_id>    |
 | cron / subagent / non-primary      | (skipped — no capture, no recall scope) |
+
+chat_id is the channel-native conversation id (e.g. the Telex conversation
+the platform plugin reports via build_source) and survives gateway
+restarts; gateway_session_key is a gateway-internal session record that
+does NOT (live-verified 2026-07-11) — it stays only as a fallback for
+platforms that never report chat_id.
 
 Compression-driven session_id rotation never splits the container (the
 gateway key / user identity is stable across it), matching the contract's
@@ -55,6 +62,8 @@ def map_conversation(
     if platform == "cron":
         return None
 
+    if chat_id := kwargs.get("chat_id"):
+        return Conversation(platform or "hermes", str(chat_id))
     if key := kwargs.get("gateway_session_key"):
         return Conversation(platform or "hermes", str(key))
     if platform == "acp":

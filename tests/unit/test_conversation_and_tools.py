@@ -12,10 +12,16 @@ from memo.tools import all_schemas, clamp_top_k
 # ── conversation container mapping (一次定死) ────────────────────────────
 
 
-def test_gateway_shape_uses_platform_and_session_key():
+def test_gateway_shape_prefers_channel_native_chat_id():
+    conv = map_conversation("s1", platform="telex",
+                            chat_id="conv-native-1", gateway_session_key="gw-restartable")
+    assert conv.channel_type == "telex" and conv.ref == "conv-native-1"
+    assert conv.key == "telex:conv-native-1"
+
+
+def test_gateway_shape_falls_back_to_session_key():
     conv = map_conversation("s1", platform="telex", gateway_session_key="grp-9")
     assert conv.channel_type == "telex" and conv.ref == "grp-9"
-    assert conv.key == "telex:grp-9"
 
 
 def test_cli_shape_is_per_user_stable():

@@ -83,7 +83,8 @@ def make_provider(monkeypatch, fake, cfg):
     p.initialize(
         "sess-1",
         platform="telex",
-        gateway_session_key="grp-777",
+        chat_id="grp-777",
+        gateway_session_key="gw-ephemeral-1",
         user_id="u-100",
         user_name="Alice",
         agent_identity="helper",

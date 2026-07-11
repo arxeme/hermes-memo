@@ -66,7 +66,7 @@ def make_provider(monkeypatch, conversation_ref: str, session: str) -> MemoMemor
     p.initialize(
         session,
         platform="telex",
-        gateway_session_key=conversation_ref,
+        chat_id=conversation_ref,
         user_id="u-live",
         user_name="LiveUser",
         agent_identity="helper",
