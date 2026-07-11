@@ -297,8 +297,10 @@ class MemoMemoryProvider(MemoryProvider):
     # ── tools ────────────────────────────────────────────────────────────
 
     def get_tool_schemas(self) -> List[Dict[str, Any]]:
-        if self._conversation is None:
-            return []
+        # Tools are static: hermes collects schemas BEFORE initialize() runs
+        # (registration precedes activation), so gating on conversation state
+        # here would register zero tools. handle_tool_call guards inactive
+        # contexts at dispatch time instead.
         return all_schemas()
 
     def handle_tool_call(self, tool_name: str, args: Dict[str, Any], **kwargs: Any) -> str:

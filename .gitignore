@@ -4,3 +4,5 @@ __pycache__/
 .pytest_cache/
 .local-test/
 *.egg-info/
+deploy/env.local
+deploy/.env
