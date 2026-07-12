@@ -1,0 +1,5 @@
+name: memo
+version: 0.1.0
+description: "Memo — Voyager platform memory service provider (capture + RecentRaw + recall/get/remember/forget)."
+pip_dependencies:
+  - httpx
