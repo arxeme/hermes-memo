@@ -37,7 +37,8 @@ conversation = 渠道侧对话容器（Memo TD §3.1）。hermes 各调用形状
 
 | hermes 形状 | channel_type | channel_conversation_ref | 理由 |
 |---|---|---|---|
-| gateway 会话（有 gateway_session_key） | 平台 id（telex/discord/…） | gateway_session_key | 渠道原生会话标识，跨 session_id 轮转稳定 |
+| gateway 消息（有 chat_id） | 平台 id（telex/discord/…） | chat_id | **渠道原生会话 id**（平台插件经 build_source 上报，如 Telex conversation id），跨 gateway 重启与 session 轮转稳定 |
+| gateway 会话（无 chat_id） | 平台 id | gateway_session_key | 兜底——gateway 内部会话记录 id，重启会变（2026-07-11 实测），仅用于不上报 chat_id 的平台 |
 | ACP（Cursor/Zed） | `acp` | ACP session_id | IDE 会话即容器（上游未穿透 cwd，与 membrain 同限制） |
 | 终端（cli/tui，含 oneshot） | `cli` | user_id | 终端无渠道容器，以"该用户的终端关系"为容器；跨重启稳定，RecentRaw 语义自然成立 |
 | 其余 | `hermes` | `session:<session_id>` | 兜底；压缩轮转经 on_session_switch 重推导 |
@@ -76,7 +77,7 @@ conversation = 渠道侧对话容器（Memo TD §3.1）。hermes 各调用形状
 
 | 契约条目 | 级别 | 履约 | 证据 |
 |---|---|---|---|
-| 同一逻辑会话恒定容器 id | 必须 | ✅ | §3 映射表一次定死；`test_cli_shape_is_per_user_stable`、`test_recent_raw_refetch_on_compression`（轮转后 ref 不变） |
+| 同一逻辑会话恒定容器 id | 必须 | ✅ | §3 映射表一次定死（gateway 形状 = 渠道原生 chat_id，gateway 重启不变——2026-07-11 E2E 实测修正并复核）；`test_gateway_shape_prefers_channel_native_chat_id`、`test_cli_shape_is_per_user_stable` |
 | channel_msg_ref 确定性合成 | 必须 | ✅ | §3 合成规则；`test_msg_ref_deterministic_for_same_event`、`test_capture_retries_until_ack`（重试不重合成） |
 | x-api-key 不透明保管、不构造 scope | 必须 | ✅ | 请求体无任何 scope 字段（client.py 全部端点）；key 只进 header |
 | 上报渠道可见全部消息、内部轨迹不上报 | 必须 | ✅ | §4；sync_turn 只见渠道内容（接口性保证） |
