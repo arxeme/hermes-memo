@@ -16,7 +16,7 @@
 |---|---|---|
 | memo 服务 | voyager-test-0 `/data/memo`（:18000 http / :19000 grpc / :18080 观测） | `test/data/deploy_test_server.sh` 部署；共享 PG/Valkey 本机直连、S3 直连 <s3-endpoint>；scope `u-dev:mi-dev` 联调前清空 |
 | hermes-agent | 同服务器 Incus VM `<hermes-vm>`（user hermes） | `deploy/deploy-memo-plugin.sh` 部署插件；`memory.provider: memo`；内置记忆关闭（见 §4 发现 3） |
-| 测试者客户端 | 本机 chisel 隧道 + web :3000 | Telex Web 真实账号驱动；bot `38e2206954dee62f`（与 hermes-telex E2E 同实例） |
+| 测试者客户端 | 本机 chisel 隧道 + web :3000 | Telex Web 真实账号驱动；bot `<bot-id>`（与 hermes-telex E2E 同实例） |
 | 网络 | VM → Incus 网关 `<incus-host-gateway>:18000` → memo | `memo.json` seed：base_url + memo-dev-key |
 
 ## 2. 用例结果
